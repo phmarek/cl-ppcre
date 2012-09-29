@@ -553,3 +553,67 @@ slots of STR objects further down the tree."))
   ;; the general case for ANCHOR, LOOKAHEAD, LOOKBEHIND, VOID, and
   ;; WORD-BOUNDARY (which all have zero-length)
   start-pos)
+
+
+
+
+(defgeneric debug-output (obj stg)
+  (:documentation "Returns a string for debugging purposes."))
+
+(defmethod debug-output (obj stg)
+  (declare (ignore obj stg))
+  "")
+
+(defmethod debug-output ((obj register) stg)
+  (declare (ignore stg))
+  ;; the "num" is the array index
+  (format nil "$~d" (1+ (num obj))))
+
+(defmethod debug-output ((obj alternation) stg)
+  (declare (ignore obj))
+  stg)
+
+(defmethod debug-output ((obj char-class) stg)
+  (format nil "[~a]: ~s" (test-function obj) stg))
+
+(defmethod debug-output ((obj str) stg)
+  (declare (ignore obj))
+  (format nil "~s" stg))
+
+(defmethod debug-output ((obj anchor) stg)
+  (declare (ignore stg obj))
+  "ANCHOR")
+
+
+(defmethod create-matcher-aux :around (A next)
+  (let* ((my-depth *ppcre-debug-depth*)
+         (*ppcre-debug-depth* (1+ my-depth))
+         (closure (call-next-method)))
+    (unless *do-debug*
+      (return-from create-matcher-aux closure))
+    (lambda (start)
+      (let* ((outer-most (not *debug-results*))
+             (my-data (list start A my-depth)))
+        (push my-data *debug-results*)
+        (let* ((result (funcall closure start)))
+          ;(setf (third my-data) result)
+          (when outer-most
+            (let ((stack (reverse *debug-results*)))
+              (format t "~&*string*: ~s~%" *string*)
+              (loop 
+                for ((start obj depth) (%end)) on stack
+                for end = (or %end result -1)
+                for does-match = (<= start end)
+                do (format t "~20a ~a ~a~%"
+                           (format nil "~va~a"
+                                   (* 2 depth) ""
+                                   (class-name (class-of obj)))
+                           (if does-match
+                             (format nil "[~3d ~3d[" start end)
+                             "NO  MATCH")
+                           (debug-output obj
+                                         (if does-match
+                                           (subseq *string* start end))
+                                         )))))
+          result)))
+    ))

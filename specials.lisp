@@ -170,3 +170,10 @@ intended to handle `character properties' like \\p{IsAlpha}.  If
                 exported-symbols-alist
                 :test #'eq))))
                
+
+(defparameter *do-debug* nil
+  "Boolean whether debugging is wanted.")
+(defparameter *debug-results* nil
+  "List of results when debugging a RE.")
+(defparameter *ppcre-debug-depth* 0
+  "debugging depth.")

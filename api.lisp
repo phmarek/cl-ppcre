@@ -150,7 +150,7 @@ modify its first argument \(but only if it's a parse tree)."))
                                           (case-insensitive-p starts-with))))))
           (declare (special end-string-offset end-anchored-p end-string))
           ;; now create the scanner and return it
-          (values (create-scanner-aux match-fn
+          (let ((scanner (create-scanner-aux match-fn
                                       (regex-min-length regex)
                                       (or (start-anchored-p regex)
                                           ;; a dot in single-line-mode also
@@ -173,8 +173,12 @@ modify its first argument \(but only if it's a parse tree)."))
                                       end-string-offset
                                       *rep-num*
                                       *zero-length-num*
-                                      reg-num)
-                  reg-names))))))
+                                      reg-num)))
+            (values (lambda (start)
+                      (let ((*debug-results* nil)
+                            (*ppcre-debug-depth* 0))
+                        (funcall scanner start)))
+                  reg-names)))))))
 
 #+:use-acl-regexp2-engine
 (declaim (inline create-scanner))

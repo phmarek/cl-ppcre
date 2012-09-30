@@ -616,7 +616,5 @@ slots of STR objects further down the tree."))
                              "NO  MATCH")
                            (debug-output obj
                                          (if does-match
-                                           (subseq *string* start end))
-                                         )))))
-          result)))
-    ))
+                                           (subseq *string* start end)))))))
+          result)))))

@@ -558,7 +558,7 @@ slots of STR objects further down the tree."))
 
 
 (defgeneric debug-output (obj stg)
-  (:documentation "Returns a string for debugging purposes."))
+  (:documentation "Returns a string for match tracing purposes."))
 
 (defmethod debug-output (obj stg)
   (declare (ignore obj stg))

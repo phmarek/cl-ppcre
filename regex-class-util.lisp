@@ -589,7 +589,7 @@ slots of STR objects further down the tree."))
   (let* ((my-depth *ppcre-debug-depth*)
          (*ppcre-debug-depth* (1+ my-depth))
          (closure (call-next-method)))
-    (unless *do-debug*
+    (unless *match-trace*
       (return-from create-matcher-aux closure))
     (lambda (start)
       (let* ((outer-most (not *debug-results*))

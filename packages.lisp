@@ -56,6 +56,7 @@
            :*regex-char-code-limit*
            :*use-bmh-matchers*
            :*allow-quoting*
+           :*match-trace*
            :*allow-named-registers*
            :*optimize-char-classes*
            :*property-resolver*

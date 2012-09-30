@@ -171,8 +171,8 @@ intended to handle `character properties' like \\p{IsAlpha}.  If
                 :test #'eq))))
                
 
-(defparameter *do-debug* nil
-  "Boolean whether debugging is wanted.")
+(defparameter *match-trace* nil
+  "Boolean value, saying whether match tracing is wanted.")
 (defparameter *debug-results* nil
   "List of results when debugging a RE.")
 (defparameter *ppcre-debug-depth* 0

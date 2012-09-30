@@ -173,6 +173,9 @@ intended to handle `character properties' like \\p{IsAlpha}.  If
 
 (defparameter *match-trace* nil
   "Boolean value, saying whether match tracing is wanted.")
+(defparameter *trace-stream* 'cl-user::*standard-output*
+  "Can either be a stream directly, or a symbol describing a stream
+   (useful if the stream changes, eg. *standard-output* with swank).")
 (defparameter *debug-results* nil
   "List of results when debugging a RE.")
 (defparameter *ppcre-debug-depth* 0

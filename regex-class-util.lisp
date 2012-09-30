@@ -598,13 +598,16 @@ slots of STR objects further down the tree."))
         (let* ((result (funcall closure start)))
           ;(setf (third my-data) result)
           (when outer-most
-            (let ((stack (reverse *debug-results*)))
-              (format t "~&*string*: ~s~%" *string*)
+            (let ((stack (reverse *debug-results*))
+                  (stream (if (symbolp *trace-output*)
+                            (symbol-value *trace-output*)
+                            *trace-output*)))
+              (format stream "~&*string*: ~s~%" *string*)
               (loop 
                 for ((start obj depth) (%end)) on stack
                 for end = (or %end result -1)
                 for does-match = (<= start end)
-                do (format t "~20a ~a ~a~%"
+                do (format stream "~20a ~a ~a~%"
                            (format nil "~va~a"
                                    (* 2 depth) ""
                                    (class-name (class-of obj)))

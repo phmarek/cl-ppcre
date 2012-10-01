@@ -1405,6 +1405,67 @@ to which value <code>*ALLOW-NAMED-REGISTERS*</code> is bound at that
 time.</blockquote>
 </blockquote>
 
+<p><br>[Special variable]
+<br><a class=none name="*match-trace*"><a class=none name="*trace-output*"><b>*match-trace*</b> and <b>*trace-output*</b></a>
+
+<blockquote><br>
+	<p>
+	If <code>*match-trace*</code> is <em>true</em> <b>during compilation</b> 
+	(the default is <code>NIL</code>), the generated match function will print 
+	information about matching/non-matching elements to <code>*trace-output*</code>.<br>
+	This can be a stream, or a symbol that resolves to a stream -- which is 
+	useful eg. when using swank, as <code>*standard-output*</code> (the 
+	default) may change when connecting/reconnecting.
+	</p>
+
+	<p>The output looks like this:
+<pre><font color=orange>;; Preparation; *trace-output* is '*standard-output* per default.</font>
+* (setf *match-trace* T)
+T
+
+<font color=orange>;; Example with a matching string:</font>
+* (cl-ppcre:scan-to-strings "^abc(d|(e+)|fff)[xyz]+" "abcfffzzxzx")     
+
+*string*: "abcfffzzxzx"
+SEQ                  [  0   0[                                           
+  ANCHOR             [  0   0[ ANCHOR                                    
+  STR                [  0   3[ "abc"
+  REGISTER           [  3   3[ $1                                        
+    ALTERNATION      [  3   3[                                           
+      STR            [  3   3[ ""                                        
+      REGISTER       [  3   3[ $2                                        
+        SEQ          [  3   3[ 
+          STR        [  3   3[ ""
+      STR            [  3   6[ "fff"                                     
+  CHAR-CLASS         [  6   7[ [#&lt;CLOSURE (LAMBDA ... &gt;]: "z"
+  REPETITION         [  7  11[ 
+"abcfffzzxzx" 
+#("fff" NIL)
+
+<font color=orange>;; Example with a non-matching string:</font>
+* (cl-ppcre:scan-to-strings "^abc(d|(e+)|fff)[xyz]+" "abcffffz")        
+
+*string*: "abcffffz"
+SEQ                  [  0   0[                                           
+  ANCHOR             [  0   0[ ANCHOR
+  STR                [  0   3[ "abc"
+  REGISTER           [  3   3[ $1
+    ALTERNATION      [  3   3[                                           
+      STR            [  3   3[ ""
+      REGISTER       [  3   3[ $2
+        SEQ          [  3   3[                                           
+          STR        [  3   3[ ""                                        
+      STR            [  3   6[ "fff"
+  CHAR-CLASS         NO  MATCH [#&lt;CLOSURE (LAMBDA ... &gt;]: NIL
+NIL</pre>
+
+	<p>Please note that the regular expression printed here might be different 
+	from the original input, due to optimizations done by 
+	<code>CL-PPCRE</code>.</p>
+</blockquote>
+
+<br>
+
 <h4><a name="misc" class=none>Miscellaneous</a></h4>
 
 <p><br>[Function]

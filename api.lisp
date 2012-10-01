@@ -1264,3 +1264,14 @@ NIL is SYMBOL wasn't yet defined to be a synonym."
 PARSE-TREE.  Both arguments are quoted."
   `(eval-when (:compile-toplevel :load-toplevel :execute)
      (setf (parse-tree-synonym ',name) ',parse-tree)))
+
+(defmacro with-match-tracing ((&key stream)
+                              &body body)
+  "Compiles BODY with match-tracing; see *match-trace* for more details."
+  `(prog2
+     (eval-when (:compile-toplevel :execute)
+       (setf *match-trace* T))
+     (let ((*trace-output* (or ,stream *trace-output*)))
+       ,@ body)
+     (eval-when (:compile-toplevel :execute)
+       (setf *match-trace* nil))))

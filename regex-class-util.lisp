@@ -556,6 +556,12 @@ slots of STR objects further down the tree."))
 
 
 
+(defgeneric debug-indentation (obj)
+  (:documentation "How much to indent for the given object."))
+(defmethod debug-indentation (obj)
+  (declare (ignore obj))
+  1)
+
 
 (defgeneric debug-output (obj stg)
   (:documentation "Returns a string for match tracing purposes."))
@@ -587,7 +593,8 @@ slots of STR objects further down the tree."))
 
 (defmethod create-matcher-aux :around (A next)
   (let* ((my-depth *ppcre-debug-depth*)
-         (*ppcre-debug-depth* (1+ my-depth))
+         (*ppcre-debug-depth* (+ my-depth
+                                 (debug-indentation A)))
          (closure (call-next-method)))
     (unless *match-trace*
       (return-from create-matcher-aux closure))

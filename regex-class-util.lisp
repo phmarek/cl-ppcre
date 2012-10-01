@@ -560,7 +560,18 @@ slots of STR objects further down the tree."))
   (:documentation "How much to indent for the given object."))
 (defmethod debug-indentation (obj)
   (declare (ignore obj))
-  1)
+  2)
+
+
+;; multiple SEQs are concatenated into a single one; so they don't 
+;; really help, they just cause more indentation.
+(defmethod debug-indentation ((obj seq))
+  (declare (ignore obj))
+  0)
+(defmethod debug-output ((obj seq) stg)
+  (declare (ignore obj stg))
+  (throw :dont-print nil))
+
 
 
 (defgeneric debug-output (obj stg)
@@ -576,6 +587,11 @@ slots of STR objects further down the tree."))
   (format nil "$~d" (1+ (num obj))))
 
 (defmethod debug-output ((obj alternation) stg)
+  (declare (ignore obj))
+  stg)
+
+
+(defmethod debug-output ((obj repetition) stg)
   (declare (ignore obj))
   stg)
 
@@ -614,14 +630,18 @@ slots of STR objects further down the tree."))
                 for ((start obj depth) (%end)) on stack
                 for end = (or %end result -1)
                 for does-match = (<= start end)
-                do (format stream "~20a ~a ~a~%"
-                           (format nil "~va~a"
-                                   (* 2 depth) ""
-                                   (class-name (class-of obj)))
-                           (if does-match
-                             (format nil "[~3d ~3d[" start end)
-                             "NO  MATCH")
-                           (debug-output obj
-                                         (if does-match
-                                           (subseq *string* start end)))))))
+                do (catch 
+                     :dont-print
+                     (format 
+                       stream "~20a ~a ~a~%"
+                       (format nil "~va~a"
+                               depth ""
+                               (class-name (class-of obj)))
+                       (if does-match
+                         (format nil "[~3d ~3d[" start end)
+                         "NO  MATCH")
+                       (debug-output 
+                         obj
+                         (if does-match
+                           (subseq *string* start end))))))))
           result)))))

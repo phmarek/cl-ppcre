@@ -174,10 +174,10 @@ modify its first argument \(but only if it's a parse tree)."))
                                       *rep-num*
                                       *zero-length-num*
                                       reg-num)))
-            (values (lambda (start)
+            (values (lambda (&rest args)
                       (let ((*debug-results* nil)
                             (*ppcre-debug-depth* 0))
-                        (funcall scanner start)))
+                        (apply scanner args)))
                   reg-names)))))))
 
 #+:use-acl-regexp2-engine

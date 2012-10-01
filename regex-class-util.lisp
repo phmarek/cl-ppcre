@@ -596,7 +596,14 @@ slots of STR objects further down the tree."))
   stg)
 
 (defmethod debug-output ((obj char-class) stg)
-  (format nil "[~a]: ~s" (test-function obj) stg))
+  (let* ((%fn (test-function obj))
+         (fn (or 
+               (third 
+                 (multiple-value-list
+                   (function-lambda-expression %fn)) )
+               #+swank (swank-backend::function-name %fn)
+               %fn)))
+    (format nil "[~a]: ~s" fn stg)))
 
 (defmethod debug-output ((obj str) stg)
   (declare (ignore obj))

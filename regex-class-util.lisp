@@ -601,7 +601,6 @@ slots of STR objects further down the tree."))
                (third 
                  (multiple-value-list
                    (function-lambda-expression %fn)) )
-               #+swank (swank-backend::function-name %fn)
                %fn)))
     (format nil "[~a]: ~s" fn stg)))
 
